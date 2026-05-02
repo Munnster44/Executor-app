@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Executor Estate Tracker App v2.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --blue:#2563eb;
+  --green:#15803d;
+  --red:#b91c1c;
+  --line:#d1d5db;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+header{
+  background:#1e3a8a;
+  color:white;
+  padding:18px;
+  text-align:center;
+}
+header h1{margin:0;font-size:24px}
+header p{margin:6px 0 0;font-size:14px}
+main{
+  max-width:1150px;
+  margin:auto;
+  padding:16px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+h2{
+  margin:0 0 10px;
+  font-size:20px;
+  color:#1e3a8a;
+}
+h3{
+  margin:14px 0 8px;
+  font-size:17px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:10px;
+}
+label{
+  font-size:13px;
+  color:var(--muted);
+  display:block;
+  margin-bottom:4px;
+}
+input, select, textarea{
+  width:100%;
+  padding:9px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-size:14px;
+  background:white;
+}
+textarea{min-height:70px}
+button{
+  border:0;
+  border-radius:8px;
+  padding:10px 12px;
+  margin:4px 4px 4px 0;
+  background:var(--blue);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+button.secondary{background:#475569}
+button.good{background:var(--green)}
+button.danger{background:var(--red)}
+button.light{
+  background:#e5e7eb;
+  color:#111827;
+}
+button:active{transform:scale(.98)}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  font-size:14px;
+}
+th,td{
+  border:1px solid var(--line);
+  padding:8px;
+  text-align:left;
+  vertical-align:top;
+}
+th{
+  background:#e0e7ff;
+}
+tr:nth-child(even) td{
+  background:#f9fafb;
+}
+.summary{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+}
+.stat{
+  background:#f8fafc;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:12px;
+}
+.stat b{
+  display:block;
+  font-size:20px;
+  margin-top:5px;
+}
+.checklist label{
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+  color:var(--ink);
+  margin:8px 0;
+}
+.checklist input{
+  width:auto;
+  margin-top:2px;
+}
+.small{
+  font-size:12px;
+  color:var(--muted);
+}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.hidden{
+  display:none;
+}
+.footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  padding:20px;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Executor Estate Tracker App v2.0</h1>
+  <p>Offline checklist, asset, debt, transaction, beneficiary and export tool</p>
+</header>
+
+<main>
+
+<section class="card">
+  <h2>Estate Information</h2>
+  <div class="grid">
+    <div><label>Deceased Full Name</label><input id="deceasedName"></div>
+    <div><label>Date of Death</label><input id="dateOfDeath" type="date"></div>
+    <div><label>Executor Name</label><input id="executorName"></div>
+    <div><label>Executor Phone / Email</label><input id="executorContact"></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Default Executor Sections To Be Done</h2>
+  <p class="small">Check items off as completed. These are saved with your JSON file and also in browser storage.</p>
+  <div class="grid checklist">
+    <div>
+      <h3>1. Immediate Actions</h3>
+      <label><input type="checkbox" data-check="Locate original will">Locate original will</label>
+      <label><input type="checkbox" data-check="Order death certificates">Order death certificates</label>
+      <label><input type="checkbox" data-check="Secure home and valuables">Secure home and valuables</label>
+      <label><input type="checkbox" data-check="Arrange funeral or memorial">Arrange funeral or memorial</label>
+    </div>
+    <div>
+      <h3>2. Notifications</h3>
+      <label><input type="checkbox" data-check="Notify CRA">Notify CRA</label>
+      <label><input type="checkbox" data-check="Notify Service Canada">Notify Service Canada</label>
+      <label><input type="checkbox" data-check="Notify banks">Notify banks</label>
+      <label><input type="checkbox" data-check="Notify insurance companies">Notify insurance companies</label>
+    </div>
+    <div>
+      <h3>3. Estate Administration</h3>
+      <label><input type="checkbox" data-check="Prepare asset inventory">Prepare asset inventory</label>
+      <label><input type="checkbox" data-check="Open estate bank account">Open estate bank account</label>
+      <label><input type="checkbox" data-check="Apply for probate if required">Apply for probate if required</label>
+      <label><input type="checkbox" data-check="Pay valid estate debts">Pay valid estate debts</label>
+    </div>
+    <div>
+      <h3>4. Taxes & Distribution</h3>
+      <label><input type="checkbox" data-check="File final tax return">File final tax return</label>
+      <label><input type="checkbox" data-check="Request CRA clearance certificate">Request CRA clearance certificate</label>
+      <label><input type="checkbox" data-check="Distribute estate to beneficiaries">Distribute estate to beneficiaries</label>
+      <label><input type="checkbox" data-check="Prepare final accounting">Prepare final accounting</label>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Summary</h2>
+  <div class="summary">
+    <div class="stat">Total Assets <b id="assetTotal">$0.00</b></div>
+    <div class="stat">Total Debts <b id="debtTotal">$0.00</b></div>
+    <div class="stat">Net Estate <b id="netEstate">$0.00</b></div>
+    <div class="stat">Estate Cash Balance <b id="cashBalance">$0.00</b></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Add Asset</h2>
+  <div class="grid">
+    <div><label>Asset Type</label><input id="assetType" placeholder="Bank, house, vehicle, investment"></div>
+    <div><label>Description</label><input id="assetDesc" placeholder="Description"></div>
+    <div><label>Value</label><input id="assetValue" type="number" step="0.01" placeholder="0.00"></div>
+  </div>
+  <button onclick="addAsset()">Add Asset</button>
+  <table id="assetTable"><thead><tr><th>Type</th><th>Description</th><th>Value</th><th>Action</th></tr></thead><tbody></tbody></table>
+</section>
+
+<section class="card">
+  <h2>Add Debt / Liability</h2>
+  <div class="grid">
+    <div><label>Creditor</label><input id="debtCreditor" placeholder="Creditor"></div>
+    <div><label>Description</label><input id="debtDesc" placeholder="Description"></div>
+    <div><label>Amount</label><input id="debtAmount" type="number" step="0.01" placeholder="0.00"></div>
+    <div><label>Status</label><select id="debtPaid"><option>No</option><option>Yes</option></select></div>
+  </div>
+  <button onclick="addDebt()">Add Debt</button>
+  <table id="debtTable"><thead><tr><th>Creditor</th><th>Description</th><th>Amount</th><th>Paid?</th><th>Action</th></tr></thead><tbody></tbody></table>
+</section>
+
+<section class="card">
+  <h2>Add Estate Transaction</h2>
+  <div class="grid">
+    <div><label>Date</label><input id="txnDate" type="date"></div>
+    <div><label>Description</label><input id="txnDesc" placeholder="Description"></div>
+    <div><label>Type</label><select id="txnType"><option>Deposit</option><option>Withdrawal</option></select></div>
+    <div><label>Amount</label><input id="txnAmount" type="number" step="0.01" placeholder="0.00"></div>
+  </div>
+  <button onclick="addTransaction()">Add Transaction</button>
+  <p class="small">After adding, the description and amount fields clear automatically for the next transaction.</p>
+  <table id="txnTable"><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th>Action</th></tr></thead><tbody></tbody></table>
+</section>
+
+<section class="card">
+  <h2>Add Beneficiary</h2>
+  <div class="grid">
+    <div><label>Name</label><input id="benName" placeholder="Beneficiary name"></div>
+    <div><label>Entitlement</label><input id="benEntitlement" placeholder="Share or amount"></div>
+    <div><label>Received?</label><select id="benReceived"><option>No</option><option>Yes</option></select></div>
+  </div>
+  <button onclick="addBeneficiary()">Add Beneficiary</button>
+  <table id="benTable"><thead><tr><th>Name</th><th>Entitlement</th><th>Received?</th><th>Action</th></tr></thead><tbody></tbody></table>
+</section>
+
+<section class="card">
+  <h2>Notes</h2>
+  <textarea id="notes" placeholder="Estate notes, phone calls, file numbers, lawyer/accountant details..."></textarea>
+</section>
+
+<section class="card">
+  <h2>Save / Load / Export</h2>
+  <div class="actions">
+    <button class="good" onclick="saveJSON()">Save to JSON File</button>
+    <button class="secondary" onclick="document.getElementById('jsonLoad').click()">Recover / Load JSON File</button>
+    <button class="light" onclick="saveText()">Save Text Report</button>
+    <button class="danger" onclick="clearAll()">Clear All Data</button>
+  </div>
+  <input class="hidden" id="jsonLoad" type="file" accept=".json,application/json" onchange="loadJSON(event)">
+  <p class="small">The app also auto-saves to this browser after every change. Use JSON save as your main backup.</p>
+</section>
+
+</main>
+
+<div class="footer">© 2026 Glen Carruthers. All rights reserved.</div>
+
+<script>
+const STORE_KEY = "executor_tracker_v2_data";
+
+let data = {
+  estateInfo:{ deceasedName:"", dateOfDeath:"", executorName:"", executorContact:"" },
+  checks:{},
+  assets:[],
+  debts:[],
+  transactions:[],
+  beneficiaries:[],
+  notes:""
+};
+
+function money(n){
+  return "$" + (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function val(id){ return document.getElementById(id).value.trim(); }
+function num(id){ return Number(document.getElementById(id).value) || 0; }
+function setVal(id,v){ document.getElementById(id).value = v || ""; }
+function today(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function collectForm(){
+  data.estateInfo.deceasedName = val("deceasedName");
+  data.estateInfo.dateOfDeath = val("dateOfDeath");
+  data.estateInfo.executorName = val("executorName");
+  data.estateInfo.executorContact = val("executorContact");
+  data.notes = document.getElementById("notes").value;
+  document.querySelectorAll("[data-check]").forEach(cb=>{
+    data.checks[cb.dataset.check] = cb.checked;
+  });
+}
+
+function fillForm(){
+  setVal("deceasedName", data.estateInfo.deceasedName);
+  setVal("dateOfDeath", data.estateInfo.dateOfDeath);
+  setVal("executorName", data.estateInfo.executorName);
+  setVal("executorContact", data.estateInfo.executorContact);
+  document.getElementById("notes").value = data.notes || "";
+  document.querySelectorAll("[data-check]").forEach(cb=>{
+    cb.checked = !!data.checks[cb.dataset.check];
+  });
+}
+
+function autoSave(){
+  collectForm();
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+
+function render(){
+  fillForm();
+
+  const assetBody = document.querySelector("#assetTable tbody");
+  assetBody.innerHTML = "";
+  data.assets.forEach((a,i)=>{
+    assetBody.innerHTML += `<tr><td>${esc(a.type)}</td><td>${esc(a.desc)}</td><td>${money(a.value)}</td><td><button class="danger" onclick="removeItem('assets',${i})">Delete</button></td></tr>`;
+  });
+
+  const debtBody = document.querySelector("#debtTable tbody");
+  debtBody.innerHTML = "";
+  data.debts.forEach((d,i)=>{
+    debtBody.innerHTML += `<tr><td>${esc(d.creditor)}</td><td>${esc(d.desc)}</td><td>${money(d.amount)}</td><td>${esc(d.paid)}</td><td><button class="danger" onclick="removeItem('debts',${i})">Delete</button></td></tr>`;
+  });
+
+  const txnBody = document.querySelector("#txnTable tbody");
+  txnBody.innerHTML = "";
+  data.transactions.forEach((t,i)=>{
+    txnBody.innerHTML += `<tr><td>${esc(t.date)}</td><td>${esc(t.desc)}</td><td>${esc(t.type)}</td><td>${money(t.amount)}</td><td><button class="danger" onclick="removeItem('transactions',${i})">Delete</button></td></tr>`;
+  });
+
+  const benBody = document.querySelector("#benTable tbody");
+  benBody.innerHTML = "";
+  data.beneficiaries.forEach((b,i)=>{
+    benBody.innerHTML += `<tr><td>${esc(b.name)}</td><td>${esc(b.entitlement)}</td><td>${esc(b.received)}</td><td><button class="danger" onclick="removeItem('beneficiaries',${i})">Delete</button></td></tr>`;
+  });
+
+  updateSummary();
+}
+
+function esc(s){
+  return String(s ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[c]));
+}
+
+function updateSummary(){
+  const assets = data.assets.reduce((s,a)=>s+(Number(a.value)||0),0);
+  const debts = data.debts.reduce((s,d)=>s+(Number(d.amount)||0),0);
+  const cash = data.transactions.reduce((s,t)=>s + (t.type==="Deposit" ? Number(t.amount)||0 : -(Number(t.amount)||0)),0);
+
+  document.getElementById("assetTotal").textContent = money(assets);
+  document.getElementById("debtTotal").textContent = money(debts);
+  document.getElementById("netEstate").textContent = money(assets - debts);
+  document.getElementById("cashBalance").textContent = money(cash);
+}
+
+function addAsset(){
+  collectForm();
+  if(!val("assetDesc") && !val("assetType")) return alert("Enter an asset type or description.");
+  data.assets.push({type:val("assetType"), desc:val("assetDesc"), value:num("assetValue")});
+  setVal("assetType",""); setVal("assetDesc",""); setVal("assetValue","");
+  autoSave(); render();
+}
+function addDebt(){
+  collectForm();
+  if(!val("debtCreditor") && !val("debtDesc")) return alert("Enter a creditor or description.");
+  data.debts.push({creditor:val("debtCreditor"), desc:val("debtDesc"), amount:num("debtAmount"), paid:val("debtPaid")});
+  setVal("debtCreditor",""); setVal("debtDesc",""); setVal("debtAmount",""); setVal("debtPaid","No");
+  autoSave(); render();
+}
+function addTransaction(){
+  collectForm();
+  if(!val("txnDesc")) return alert("Enter a transaction description.");
+  data.transactions.push({date:val("txnDate") || today(), desc:val("txnDesc"), type:val("txnType"), amount:num("txnAmount")});
+
+  // Requested: clear description and amount for next transaction
+  setVal("txnDesc","");
+  setVal("txnAmount","");
+  setVal("txnDate", today());
+
+  autoSave(); render();
+}
+function addBeneficiary(){
+  collectForm();
+  if(!val("benName")) return alert("Enter a beneficiary name.");
+  data.beneficiaries.push({name:val("benName"), entitlement:val("benEntitlement"), received:val("benReceived")});
+  setVal("benName",""); setVal("benEntitlement",""); setVal("benReceived","No");
+  autoSave(); render();
+}
+function removeItem(section,index){
+  data[section].splice(index,1);
+  autoSave(); render();
+}
+
+function download(filename, content, type){
+  const blob = new Blob([content], {type:type});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+}
+function safeName(){
+  const n = data.estateInfo.deceasedName || "Estate";
+  return n.replace(/[^a-z0-9_-]+/gi,"_");
+}
+function saveJSON(){
+  collectForm();
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+  download("Executor_Estate_Backup_" + safeName() + ".json", JSON.stringify(data,null,2), "application/json");
+}
+function loadJSON(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try{
+      const loaded = JSON.parse(e.target.result);
+      data = {
+        estateInfo: loaded.estateInfo || {},
+        checks: loaded.checks || {},
+        assets: loaded.assets || [],
+        debts: loaded.debts || [],
+        transactions: loaded.transactions || [],
+        beneficiaries: loaded.beneficiaries || [],
+        notes: loaded.notes || ""
+      };
+      localStorage.setItem(STORE_KEY, JSON.stringify(data));
+      render();
+      alert("JSON file loaded and recovered.");
+    }catch(err){
+      alert("Could not load JSON file. Please check that it is a valid executor backup.");
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = "";
+}
+function saveText(){
+  collectForm();
+  let lines = [];
+  lines.push("EXECUTOR ESTATE REPORT");
+  lines.push("======================");
+  lines.push("Deceased: " + (data.estateInfo.deceasedName || ""));
+  lines.push("Date of Death: " + (data.estateInfo.dateOfDeath || ""));
+  lines.push("Executor: " + (data.estateInfo.executorName || ""));
+  lines.push("Contact: " + (data.estateInfo.executorContact || ""));
+  lines.push("");
+
+  lines.push("CHECKLIST");
+  lines.push("---------");
+  Object.keys(data.checks).sort().forEach(k=>lines.push((data.checks[k] ? "[X] " : "[ ] ") + k));
+  lines.push("");
+
+  lines.push("ASSETS");
+  lines.push("------");
+  data.assets.forEach(a=>lines.push(`${a.type} | ${a.desc} | ${money(a.value)}`));
+  lines.push("");
+
+  lines.push("DEBTS");
+  lines.push("-----");
+  data.debts.forEach(d=>lines.push(`${d.creditor} | ${d.desc} | ${money(d.amount)} | Paid: ${d.paid}`));
+  lines.push("");
+
+  lines.push("TRANSACTIONS");
+  lines.push("------------");
+  data.transactions.forEach(t=>lines.push(`${t.date} | ${t.desc} | ${t.type} | ${money(t.amount)}`));
+  lines.push("");
+
+  lines.push("BENEFICIARIES");
+  lines.push("-------------");
+  data.beneficiaries.forEach(b=>lines.push(`${b.name} | ${b.entitlement} | Received: ${b.received}`));
+  lines.push("");
+
+  lines.push("NOTES");
+  lines.push("-----");
+  lines.push(data.notes || "");
+
+  download("Executor_Estate_Report_" + safeName() + ".txt", lines.join("\n"), "text/plain");
+}
+function clearAll(){
+  if(!confirm("Clear all estate tracker data from this app and browser storage? Save a JSON backup first if needed.")) return;
+  data = { estateInfo:{deceasedName:"",dateOfDeath:"",executorName:"",executorContact:""}, checks:{}, assets:[], debts:[], transactions:[], beneficiaries:[], notes:"" };
+  localStorage.removeItem(STORE_KEY);
+  render();
+}
+function loadLocal(){
+  try{
+    const saved = localStorage.getItem(STORE_KEY);
+    if(saved) data = JSON.parse(saved);
+  }catch(e){}
+  if(!document.getElementById("txnDate").value) setVal("txnDate", today());
+  render();
+}
+document.addEventListener("input", autoSave);
+document.addEventListener("change", autoSave);
+loadLocal();
+</script>
+</body>
+</html>
