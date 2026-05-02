@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Executor Tracker App</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+input, button { margin: 5px; padding: 5px; }
+table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
+</style>
+</head>
+<body>
+
+<h2>Executor Transaction Tracker</h2>
+
+<input id="desc" placeholder="Description">
+<input id="amount" type="number" placeholder="Amount">
+<button onclick="addEntry()">Add</button>
+
+<table id="table">
+<tr><th>Description</th><th>Amount</th></tr>
+</table>
+
+<script>
+function addEntry() {
+    let desc = document.getElementById("desc").value;
+    let amt = document.getElementById("amount").value;
+    let table = document.getElementById("table");
+    let row = table.insertRow();
+    row.insertCell(0).innerHTML = desc;
+    row.insertCell(1).innerHTML = amt;
+}
+</script>
+
+</body>
+</html>
